@@ -6,8 +6,15 @@
     <title>TON Tap Master - Tap to Earn TON</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import firebaseService from './firebase.js';
+        window.firebaseService = firebaseService;
+    </script>
 </head>
 <body>
+    <!-- Existing HTML structure remains the same -->
     <div class="container">
         <!-- Telegram User Info -->
         <div class="telegram-user" id="telegram-user" style="display: none;">
@@ -70,12 +77,9 @@
 
         <!-- Leaderboard -->
         <div class="leaderboard-section">
-            <h3>🏆 WEEKLY LEADERBOARD</h3>
+            <h3>🏆 LIVE LEADERBOARD</h3>
             <div id="leaderboard-list" class="leaderboard-list">
-                <div class="leaderboard-item">🥇 CryptoMaster: 1,234 TON</div>
-                <div class="leaderboard-item">🥈 TapKing: 987 TON</div>
-                <div class="leaderboard-item">🥉 TonHunter: 765 TON</div>
-                <div class="leaderboard-item">4. You: 0 TON</div>
+                <div class="leaderboard-item">🥇 Loading...</div>
             </div>
         </div>
 
@@ -97,6 +101,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js" type="module"></script>
 </body>
 </html>
