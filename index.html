@@ -6,17 +6,30 @@
     <title>TON Tap Master - Tap to Earn TON</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        .debug-info {
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <!-- Debug Info -->
+        <div id="debug-info" class="debug-info"></div>
+
         <!-- Telegram User Info -->
         <div class="telegram-user" id="telegram-user" style="display: none;">
-            <img id="user-photo" src="" alt="User Photo">
+            <img id="user-photo" src="" alt="User Photo" style="display: none;">
             <span id="user-name">Telegram User</span>
         </div>
 
-        <!-- Rest of your existing HTML code -->
-        <div class="container">
         <!-- Header Section -->
         <div class="header">
             <h1>💎 TON Tap Master</h1>
@@ -64,17 +77,23 @@
             <div class="referral-code">
                 <p>Your Referral Link:</p>
                 <div class="code-container">
-                    <input type="text" id="referral-link" readonly>
+                    <input type="text" id="referral-link" value="https://t.me/TonTapMasterBot?start=ref123" readonly>
                     <button onclick="copyReferralLink()">📋 Copy</button>
                 </div>
             </div>
+
+            <!-- Test Button -->
+            <button onclick="testButton()" style="background: #28a745;">🧪 Test Button</button>
         </div>
 
         <!-- Leaderboard -->
         <div class="leaderboard-section">
             <h3>🏆 WEEKLY LEADERBOARD</h3>
             <div id="leaderboard-list" class="leaderboard-list">
-                <!-- Leaderboard items will be loaded here -->
+                <div class="leaderboard-item">🥇 CryptoMaster: 1,234 TON</div>
+                <div class="leaderboard-item">🥈 TapKing: 987 TON</div>
+                <div class="leaderboard-item">🥉 TonHunter: 765 TON</div>
+                <div class="leaderboard-item">4. You: 0 TON</div>
             </div>
         </div>
 
@@ -93,6 +112,15 @@
         <div class="ads-section">
             <h3>📺 EARN MORE</h3>
             <button onclick="showMonetagAd()">🎬 Watch Ad = +10 TON Instant</button>
+        </div>
+
+        <!-- Debug Controls -->
+        <div class="debug-section" style="background: #333; padding: 10px; border-radius: 10px; margin-top: 20px;">
+            <h3 style="color: white;">🐛 Debug Controls</h3>
+            <button onclick="addCoins(10)" style="background: #ff6b6b;">+10 Coins</button>
+            <button onclick="addReferral()" style="background: #4ecdc4;">+1 Referral</button>
+            <button onclick="resetGame()" style="background: #45b7d1;">Reset Game</button>
+            <button onclick="showDebugInfo()" style="background: #96ceb4;">Show Debug Info</button>
         </div>
     </div>
 
