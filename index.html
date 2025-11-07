@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TON Tap Master - Tap to Earn TON</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>💎 TON Tap Master</h1>
+            <div class="user-info">
+                <div class="balance">💰 <span id="balance">0.00</span> TON</div>
+                <div class="level">⭐ Level <span id="level">1</span></div>
+            </div>
+        </div>
+
+        <!-- Tap Area -->
+        <div class="tap-section">
+            <button id="tap-btn" class="tap-button" onclick="handleTap()">
+                👆 TAP TO EARN<br>
+                <span id="tap-value">+0.1 TON</span>
+            </button>
+            <div class="energy-bar">
+                <div class="energy-label">⚡ Energy: <span id="energy">100</span>/100</div>
+                <div class="energy-progress">
+                    <div id="energy-fill" class="energy-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boost Section -->
+        <div class="boost-section">
+            <h3>🚀 DAILY BOOST</h3>
+            <button id="boost-btn" onclick="activateFacebookBoost()">
+                📱 Share to Facebook = 2x Earnings (1 Hour)
+            </button>
+            <div id="boost-timer" class="boost-timer">Boost: Not Active</div>
+        </div>
+
+        <!-- Referral Progress -->
+        <div class="referral-section">
+            <h3>🎯 WITHDRAWAL REQUIREMENT</h3>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div id="referral-progress" class="progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="referral-count">0</span>/5 Referrals to Unlock Withdrawal
+                </div>
+            </div>
+            
+            <div class="referral-code">
+                <p>Your Referral Link:</p>
+                <div class="code-container">
+                    <input type="text" id="referral-link" readonly>
+                    <button onclick="copyReferralLink()">📋 Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="leaderboard-section">
+            <h3>🏆 WEEKLY LEADERBOARD</h3>
+            <div id="leaderboard-list" class="leaderboard-list">
+                <!-- Leaderboard items will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Withdrawal Section -->
+        <div class="withdrawal-section">
+            <h3>💳 WITHDRAW TON</h3>
+            <div id="withdrawal-status" class="withdrawal-status">
+                🔒 LOCKED: Need 5 referrals to unlock withdrawal
+            </div>
+            <button id="withdraw-btn" onclick="requestWithdrawal()" disabled>
+                UNLOCK WITHDRAWAL (5 Referrals Required)
+            </button>
+        </div>
+
+        <!-- Ads Section -->
+        <div class="ads-section">
+            <h3>📺 EARN MORE</h3>
+            <button onclick="showMonetagAd()">🎬 Watch Ad = +10 TON Instant</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
