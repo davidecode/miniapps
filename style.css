@@ -1,3 +1,66 @@
+/* Telegram User Info */
+.telegram-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.telegram-user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.telegram-user span {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Telegram-specific Styles */
+.tg-button {
+    background: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+}
+
+/* Enhanced Mobile Experience */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px 5px;
+    }
+    
+    .tap-button {
+        width: 160px;
+        height: 160px;
+        font-size: 14px;
+    }
+    
+    .header h1 {
+        font-size: 18px;
+    }
+}
+
+/* Smooth Animations */
+.tap-button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced Progress Bars */
+.progress-fill {
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Telegram Theme Adaptation */
+body {
+    background: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
+    transition: all 0.3s ease;
+}
+
+
 /* Reset dan Base Styles */
 * {
     margin: 0;
@@ -258,67 +321,5 @@ button:disabled {
     --tg-theme-link-color: #2678b6;
     --tg-theme-button-color: #50a8eb;
     --tg-theme-button-text-color: #ffffff;
-}
-
-/* Telegram User Info */
-.telegram-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.telegram-user img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-.telegram-user span {
-    font-weight: bold;
-    font-size: 14px;
-}
-
-/* Telegram-specific Styles */
-.tg-button {
-    background: var(--tg-theme-button-color);
-    color: var(--tg-theme-button-text-color);
-}
-
-/* Enhanced Mobile Experience */
-@media (max-width: 480px) {
-    .container {
-        padding: 10px 5px;
-    }
-    
-    .tap-button {
-        width: 160px;
-        height: 160px;
-        font-size: 14px;
-    }
-    
-    .header h1 {
-        font-size: 18px;
-    }
-}
-
-/* Smooth Animations */
-.tap-button {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Enhanced Progress Bars */
-.progress-fill {
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Telegram Theme Adaptation */
-body {
-    background: var(--tg-theme-bg-color);
-    color: var(--tg-theme-text-color);
-    transition: all 0.3s ease;
 }
 
