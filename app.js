@@ -1,4 +1,4 @@
-// app.js - Regular Script Version
+// app.js - Dengan Monetag Integration
 console.log("🎮 Loading TON Tap Master...");
 
 // Global Game State
@@ -17,6 +17,20 @@ let gameState = {
     userId: null,
     username: null
 };
+
+// Monetag Configuration
+const MONETAG_CONFIG = {
+    ads: [
+        { url: "https://otieu.com/4/9659425", reward: 15, name: "Ad 1" },
+        { url: "https://otieu.com/4/9641212", reward: 20, name: "Ad 2" },
+        { url: "https://otieu.com/4/9663909", reward: 25, name: "Ad 3" }
+    ],
+    adDuration: 10000, // 10 seconds
+    cooldown: 30000 // 30 seconds between ads
+};
+
+let currentAd = null;
+let adTimer = null;
 
 // Initialize Game
 async function initGame() {
@@ -74,14 +88,128 @@ function setupEventListeners() {
         console.log("✅ Withdraw button listener added");
     }
     
-    // Monetag ad button
-    const monetagBtn = document.getElementById('monetag-ad-btn');
-    if (monetagBtn) {
-        monetagBtn.addEventListener('click', showMonetagAd);
-        console.log("✅ Monetag button listener added");
+    // Monetag ad buttons
+    const monetagBtns = document.querySelectorAll('.monetag-ad-btn');
+    monetagBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            const reward = parseInt(this.getAttribute('data-reward'));
+            showMonetagAd(url, reward);
+        });
+    });
+    console.log(`✅ ${monetagBtns.length} Monetag button listeners added`);
+    
+    // Close ad button
+    const closeAdBtn = document.getElementById('close-ad-btn');
+    if (closeAdBtn) {
+        closeAdBtn.addEventListener('click', closeMonetagAd);
     }
     
     console.log("✅ All event listeners setup complete");
+}
+
+// Monetag Ad System
+function showMonetagAd(url, reward) {
+    console.log(`📺 Starting Monetag ad: ${url} for ${reward} TON`);
+    
+    currentAd = { url, reward, startTime: Date.now() };
+    
+    // Show modal
+    const modal = document.getElementById('monetag-modal');
+    const adRewardElement = document.getElementById('ad-reward');
+    const adTimerElement = document.getElementById('ad-timer');
+    
+    if (modal && adRewardElement) {
+        adRewardElement.textContent = reward;
+        modal.style.display = 'block';
+        
+        // Open ad in new tab
+        const adWindow = window.open(url, '_blank');
+        
+        // Start progress timer
+        let timeLeft = MONETAG_CONFIG.adDuration / 1000;
+        const progressFill = document.getElementById('ad-progress-fill');
+        
+        adTimer = setInterval(() => {
+            timeLeft--;
+            const progress = ((MONETAG_CONFIG.adDuration / 1000 - timeLeft) / (MONETAG_CONFIG.adDuration / 1000)) * 100;
+            
+            if (progressFill) {
+                progressFill.style.width = `${progress}%`;
+            }
+            
+            if (adTimerElement) {
+                adTimerElement.textContent = `Ad completes in ${timeLeft}s...`;
+            }
+            
+            if (timeLeft <= 0) {
+                completeMonetagAd(reward);
+            }
+        }, 1000);
+        
+        // Check if user closed the ad window
+        const checkAdWindow = setInterval(() => {
+            if (adWindow.closed) {
+                clearInterval(checkAdWindow);
+                completeMonetagAd(reward);
+            }
+        }, 1000);
+    }
+}
+
+function completeMonetagAd(reward) {
+    console.log(`✅ Monetag ad completed! Awarding ${reward} TON`);
+    
+    if (adTimer) {
+        clearInterval(adTimer);
+    }
+    
+    // Award TON coins
+    gameState.balance += reward;
+    
+    // Show completion message
+    const adTimerElement = document.getElementById('ad-timer');
+    if (adTimerElement) {
+        adTimerElement.textContent = `✅ +${reward} TON Added!`;
+        adTimerElement.style.color = '#4CAF50';
+    }
+    
+    // Update display
+    updateDisplay();
+    saveGameState();
+    
+    // Auto close modal after 2 seconds
+    setTimeout(() => {
+        closeMonetagAd();
+        alert(`🎉 Congratulations! You earned ${reward} TON from watching the ad!`);
+    }, 2000);
+}
+
+function closeMonetagAd() {
+    console.log("📺 Closing Monetag ad");
+    
+    const modal = document.getElementById('monetag-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    if (adTimer) {
+        clearInterval(adTimer);
+    }
+    
+    currentAd = null;
+    
+    // Reset progress bar
+    const progressFill = document.getElementById('ad-progress-fill');
+    const adTimerElement = document.getElementById('ad-timer');
+    
+    if (progressFill) {
+        progressFill.style.width = '0%';
+    }
+    if (adTimerElement) {
+        adTimerElement.textContent = 'Loading ad...';
+        adTimerElement.style.color = '';
+    }
 }
 
 // Telegram Setup
@@ -309,18 +437,6 @@ function requestWithdrawal() {
     gameState.balance = 0;
     updateDisplay();
     saveGameState();
-}
-
-function showMonetagAd() {
-    console.log("📺 Showing Monetag ad");
-    
-    // Simulate ad view
-    setTimeout(() => {
-        gameState.balance += 10;
-        alert("✅ +10 TON added for watching ad!");
-        updateDisplay();
-        saveGameState();
-    }, 1000);
 }
 
 // Game Systems
