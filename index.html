@@ -6,15 +6,8 @@
     <title>TON Tap Master - Tap to Earn TON</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Firebase SDK -->
-    <script type="module">
-        import firebaseService from './firebase.js';
-        window.firebaseService = firebaseService;
-    </script>
 </head>
 <body>
-    <!-- Existing HTML structure remains the same -->
     <div class="container">
         <!-- Telegram User Info -->
         <div class="telegram-user" id="telegram-user" style="display: none;">
@@ -33,7 +26,7 @@
 
         <!-- Tap Area -->
         <div class="tap-section">
-            <button id="tap-btn" class="tap-button" onclick="handleTap()">
+            <button id="tap-btn" class="tap-button">
                 👆 TAP TO EARN<br>
                 <span id="tap-value">+0.1 TON</span>
             </button>
@@ -48,7 +41,7 @@
         <!-- Boost Section -->
         <div class="boost-section">
             <h3>🚀 DAILY BOOST</h3>
-            <button id="boost-btn" onclick="activateFacebookBoost()">
+            <button id="boost-btn">
                 📱 Share to Facebook = 2x Earnings (1 Hour)
             </button>
             <div id="boost-timer" class="boost-timer">Boost: Not Active</div>
@@ -70,7 +63,7 @@
                 <p>Your Referral Link:</p>
                 <div class="code-container">
                     <input type="text" id="referral-link" value="https://t.me/TonTapMasterBot?start=ref123" readonly>
-                    <button onclick="copyReferralLink()">📋 Copy</button>
+                    <button id="copy-ref-btn">📋 Copy</button>
                 </div>
             </div>
         </div>
@@ -89,7 +82,7 @@
             <div id="withdrawal-status" class="withdrawal-status">
                 🔒 LOCKED: Need 5 referrals to unlock withdrawal
             </div>
-            <button id="withdraw-btn" onclick="requestWithdrawal()" disabled>
+            <button id="withdraw-btn" disabled>
                 UNLOCK WITHDRAWAL (5 Referrals Required)
             </button>
         </div>
@@ -97,10 +90,12 @@
         <!-- Ads Section -->
         <div class="ads-section">
             <h3>📺 EARN MORE</h3>
-            <button onclick="showMonetagAd()">🎬 Watch Ad = +10 TON Instant</button>
+            <button id="monetag-ad-btn">🎬 Watch Ad = +10 TON Instant</button>
         </div>
     </div>
 
-    <script src="app.js" type="module"></script>
+    <!-- Load Firebase and App as regular scripts -->
+    <script src="firebase.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
