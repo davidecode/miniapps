@@ -1,101 +1,97 @@
-// firebase.js - Firebase Configuration
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
-import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, onSnapshot, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js';
+// firebase.js - Firebase Configuration (Regular Script)
+console.log("🔥 Loading Firebase...");
 
-// Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAq7T-3RSiYrVDngGz2UCmNhj5Jj9neU_w",
+// Firebase configuration - GANTI DENGAN CONFIG ANDA
+const firebaseConfig = {
+    apiKey: "AIzaSyEXAMPLE1234567890",
     authDomain: "ton-tap-master.firebaseapp.com",
     projectId: "ton-tap-master",
-    storageBucket: "ton-tap-master.firebasestorage.app",
-    messagingSenderId: "796216661685",
-    appId: "1:796216661685:web:7885728f25212e5133d0fc",
-    measurementId: "G-THBQZYCPJJ"
-  };
+    storageBucket: "ton-tap-master.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef123456"
+};
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-// Firebase Functions
-class FirebaseService {
-    constructor() {
-        this.userId = null;
-        this.userData = null;
-    }
+// Firebase Service
+const FirebaseService = {
+    userId: null,
+    userData: null,
 
-    // Set user ID (Telegram user ID or generated ID)
     setUserId(id) {
         this.userId = id;
-    }
+        console.log("👤 Firebase user ID set:", id);
+    },
 
-    // Save user data to Firestore
     async saveUserData(userData) {
-        if (!this.userId) return;
+        if (!this.userId) {
+            console.log("❌ No user ID set for Firebase");
+            return false;
+        }
 
         try {
-            const userRef = doc(db, 'users', this.userId);
-            await setDoc(userRef, {
+            const userRef = db.collection('users').doc(this.userId);
+            await userRef.set({
                 ...userData,
-                lastUpdated: new Date(),
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
                 telegramData: window.Telegram?.WebApp?.initDataUnsafe?.user || null
             }, { merge: true });
             
-            console.log('User data saved to Firebase');
+            console.log('✅ User data saved to Firebase');
             return true;
         } catch (error) {
-            console.error('Error saving user data:', error);
+            console.error('❌ Error saving user data:', error);
             return false;
         }
-    }
+    },
 
-    // Load user data from Firestore
     async loadUserData() {
-        if (!this.userId) return null;
+        if (!this.userId) {
+            console.log("❌ No user ID set for Firebase");
+            return null;
+        }
 
         try {
-            const userRef = doc(db, 'users', this.userId);
-            const userDoc = await getDoc(userRef);
+            const userRef = db.collection('users').doc(this.userId);
+            const userDoc = await userRef.get();
             
-            if (userDoc.exists()) {
+            if (userDoc.exists) {
                 this.userData = userDoc.data();
-                console.log('User data loaded from Firebase');
+                console.log('✅ User data loaded from Firebase');
                 return this.userData;
             } else {
-                console.log('No user data found in Firebase');
+                console.log('ℹ️ No user data found in Firebase');
                 return null;
             }
         } catch (error) {
-            console.error('Error loading user data:', error);
+            console.error('❌ Error loading user data:', error);
             return null;
         }
-    }
+    },
 
-    // Update specific fields
     async updateUserData(updates) {
         if (!this.userId) return;
 
         try {
-            const userRef = doc(db, 'users', this.userId);
-            await updateDoc(userRef, {
+            const userRef = db.collection('users').doc(this.userId);
+            await userRef.update({
                 ...updates,
-                lastUpdated: new Date()
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
             });
-            console.log('User data updated in Firebase');
+            console.log('✅ User data updated in Firebase');
         } catch (error) {
-            console.error('Error updating user data:', error);
+            console.error('❌ Error updating user data:', error);
         }
-    }
+    },
 
-    // Get real-time leaderboard
     setupLeaderboardListener(callback, limitCount = 10) {
-        const leaderboardQuery = query(
-            collection(db, 'users'),
-            orderBy('balance', 'desc'),
-            limit(limitCount)
-        );
+        const leaderboardQuery = db.collection('users')
+            .orderBy('balance', 'desc')
+            .limit(limitCount);
 
-        return onSnapshot(leaderboardQuery, (snapshot) => {
+        return leaderboardQuery.onSnapshot((snapshot) => {
             const leaderboard = [];
             snapshot.forEach((doc) => {
                 const data = doc.data();
@@ -109,45 +105,23 @@ class FirebaseService {
             });
             callback(leaderboard);
         });
-    }
+    },
 
-    // Track referral
     async trackReferral(referrerId, referredUserId) {
         try {
-            const referralRef = doc(collection(db, 'referrals'));
-            await setDoc(referralRef, {
+            await db.collection('referrals').add({
                 referrerId: referrerId,
                 referredUserId: referredUserId,
-                timestamp: new Date(),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 status: 'active'
             });
-            console.log('Referral tracked in Firebase');
+            console.log('✅ Referral tracked in Firebase');
             return true;
         } catch (error) {
-            console.error('Error tracking referral:', error);
+            console.error('❌ Error tracking referral:', error);
             return false;
         }
     }
+};
 
-    // Get user referrals count
-    async getUserReferralsCount(userId) {
-        try {
-            // This would require a more complex query in production
-            // For now, we'll handle this in the user document
-            const userRef = doc(db, 'users', userId);
-            const userDoc = await getDoc(userRef);
-            
-            if (userDoc.exists()) {
-                return userDoc.data().referrals || 0;
-            }
-            return 0;
-        } catch (error) {
-            console.error('Error getting referrals count:', error);
-            return 0;
-        }
-    }
-}
-
-// Create global instance
-const firebaseService = new FirebaseService();
-export default firebaseService;
+console.log("✅ Firebase loaded successfully!");
