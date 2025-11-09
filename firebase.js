@@ -1,7 +1,7 @@
 // firebase.js - Firebase Configuration (Regular Script)
 console.log("🔥 Loading Firebase...");
 
-// Firebase configuration - GANTI DENGAN CONFIG ANDA
+// Firebase configuration - GANTI DENGAN CONFIG ANDA!
 const firebaseConfig = {
     apiKey: "AIzaSyEXAMPLE1234567890",
     authDomain: "ton-tap-master.firebaseapp.com",
