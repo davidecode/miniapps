@@ -6,6 +6,10 @@
     <title>TON Tap Master - Tap to Earn TON</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 <body>
     <div class="container">
@@ -87,18 +91,37 @@
             </button>
         </div>
 
-        <!-- Ads Section -->
+        <!-- Ads Section dengan Monetag Links -->
         <div class="ads-section">
-            <h3>📺 EARN MORE</h3>
-            <button id="monetag-ad-btn">🎬 Watch Ad = +10 TON Instant</button>
+            <h3>📺 EARN MORE TON</h3>
+            <button class="monetag-ad-btn" data-url="https://otieu.com/4/9659425" data-reward="15">
+                🎬 Watch Ad 1 = +15 TON Instant
+            </button>
+            <button class="monetag-ad-btn" data-url="https://otieu.com/4/9641212" data-reward="20">
+                🎮 Play Game = +20 TON Bonus
+            </button>
+            <button class="monetag-ad-btn" data-url="https://otieu.com/4/9663909" data-reward="25">
+                💎 Premium Ad = +25 TON Reward
+            </button>
+        </div>
+
+        <!-- Monetag Ad Modal -->
+        <div id="monetag-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>📺 Watch Ad to Earn TON</h3>
+                <p>Complete the ad to receive <span id="ad-reward">0</span> TON!</p>
+                <div class="ad-progress">
+                    <div class="ad-progress-bar">
+                        <div id="ad-progress-fill" class="ad-progress-fill"></div>
+                    </div>
+                    <div id="ad-timer">Loading ad...</div>
+                </div>
+                <button id="close-ad-btn">Close Ad</button>
+            </div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <!-- Load Firebase and App as regular scripts -->
+    <!-- Load scripts -->
     <script src="firebase.js"></script>
     <script src="app.js"></script>
 </body>
