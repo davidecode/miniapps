@@ -91,24 +91,40 @@
             </button>
         </div>
 
-        <!-- Ads Section dengan Monetag Links -->
-        <div class="ads-section">
-            <h3>📺 EARN MORE TON</h3>
-            <button class="monetag-ad-btn" data-url="https://otieu.com/4/9659425" data-reward="15">
-                🎬 Watch Ad 1 = +15 TON Instant
-            </button>
-            <button class="monetag-ad-btn" data-url="https://otieu.com/4/9641212" data-reward="20">
-                🎮 Play Game = +20 TON Bonus
-            </button>
-            <button class="monetag-ad-btn" data-url="https://otieu.com/4/9663909" data-reward="25">
-                💎 Premium Ad = +25 TON Reward
-            </button>
+        <!-- Monetag Links Modal - MUNCUL SETELAH TAP -->
+        <div id="monetag-modal" class="modal">
+            <div class="modal-content">
+                <h3>🎁 Bonus Earnings!</h3>
+                <p>Watch ads to earn extra TON coins!</p>
+                
+                <div class="monetag-buttons">
+                    <button class="monetag-ad-btn" data-url="https://otieu.com/4/9659425" data-reward="15">
+                        <span class="ad-icon">🎬</span>
+                        <span class="ad-text">Watch Ad 1</span>
+                        <span class="ad-reward">+15 TON</span>
+                    </button>
+                    
+                    <button class="monetag-ad-btn" data-url="https://otieu.com/4/9641212" data-reward="20">
+                        <span class="ad-icon">🎮</span>
+                        <span class="ad-text">Play Game</span>
+                        <span class="ad-reward">+20 TON</span>
+                    </button>
+                    
+                    <button class="monetag-ad-btn" data-url="https://otieu.com/4/9663909" data-reward="25">
+                        <span class="ad-icon">💎</span>
+                        <span class="ad-text">Premium Ad</span>
+                        <span class="ad-reward">+25 TON</span>
+                    </button>
+                </div>
+                
+                <button id="close-monetag-modal" class="close-btn">Maybe Later</button>
+            </div>
         </div>
 
-        <!-- Monetag Ad Modal -->
-        <div id="monetag-modal" class="modal" style="display: none;">
+        <!-- Ad Progress Modal -->
+        <div id="ad-progress-modal" class="modal">
             <div class="modal-content">
-                <h3>📺 Watch Ad to Earn TON</h3>
+                <h3>📺 Watching Ad</h3>
                 <p>Complete the ad to receive <span id="ad-reward">0</span> TON!</p>
                 <div class="ad-progress">
                     <div class="ad-progress-bar">
