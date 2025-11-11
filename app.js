@@ -1,4 +1,4 @@
-// app.js - Complete Version dengan Semua Fungsi
+// app.js - Complete Fixed Version
 console.log("🎮 Loading TON Tap Master...");
 
 // Global Game State
@@ -16,7 +16,7 @@ let gameState = {
     totalTaps: 0,
     userId: null,
     username: null,
-    lastMonetagShow: 0 // Timestamp terakhir show monetag
+    lastMonetagShow: 0
 };
 
 // Monetag Configuration
@@ -26,9 +26,9 @@ const MONETAG_CONFIG = {
         { url: "https://otieu.com/4/9641212", reward: 20, name: "Ad 2", icon: "🎮" },
         { url: "https://otieu.com/4/9663909", reward: 25, name: "Ad 3", icon: "💎" }
     ],
-    adDuration: 10000, // 10 seconds
-    showChance: 0.3, // 30% chance muncul setelah tap
-    cooldown: 30000 // 30 seconds antara show monetag
+    adDuration: 10000,
+    showChance: 0.3,
+    cooldown: 30000
 };
 
 let currentAd = null;
@@ -37,24 +37,13 @@ let adTimer = null;
 // Initialize Game
 async function initGame() {
     console.log("🎮 Initializing game...");
-    
-    // Setup event listeners first
     setupEventListeners();
-    
-    // Setup Telegram
     await setupTelegram();
-    
-    // Load game state
     await loadGameState();
-    
-    // Update display
     updateDisplay();
-    
-    // Start systems
     startEnergyRecharge();
     generateReferralCode();
     setupLeaderboard();
-    
     console.log("✅ Game initialized successfully!");
 }
 
@@ -62,55 +51,20 @@ async function initGame() {
 function setupEventListeners() {
     console.log("🔗 Setting up event listeners...");
     
-    // Tap button
-    const tapBtn = document.getElementById('tap-btn');
-    if (tapBtn) {
-        tapBtn.addEventListener('click', handleTap);
-        console.log("✅ Tap button listener added");
-    }
-    
-    // Boost button
-    const boostBtn = document.getElementById('boost-btn');
-    if (boostBtn) {
-        boostBtn.addEventListener('click', activateFacebookBoost);
-        console.log("✅ Boost button listener added");
-    }
-    
-    // Copy referral button
-    const copyRefBtn = document.getElementById('copy-ref-btn');
-    if (copyRefBtn) {
-        copyRefBtn.addEventListener('click', copyReferralLink);
-        console.log("✅ Copy referral button listener added");
-    }
-    
-    // Withdraw button
-    const withdrawBtn = document.getElementById('withdraw-btn');
-    if (withdrawBtn) {
-        withdrawBtn.addEventListener('click', requestWithdrawal);
-        console.log("✅ Withdraw button listener added");
-    }
-    
-    // Monetag ad buttons
-    const monetagBtns = document.querySelectorAll('.monetag-ad-btn');
-    monetagBtns.forEach(btn => {
+    document.getElementById('tap-btn')?.addEventListener('click', handleTap);
+    document.getElementById('boost-btn')?.addEventListener('click', activateFacebookBoost);
+    document.getElementById('copy-ref-btn')?.addEventListener('click', copyReferralLink);
+    document.getElementById('withdraw-btn')?.addEventListener('click', requestWithdrawal);
+    document.getElementById('close-monetag-modal')?.addEventListener('click', closeMonetagModalFunc);
+    document.getElementById('close-ad-btn')?.addEventListener('click', closeAdProgressModal);
+
+    document.querySelectorAll('.monetag-ad-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const url = this.getAttribute('data-url');
             const reward = parseInt(this.getAttribute('data-reward'));
             startMonetagAd(url, reward);
         });
     });
-    
-    // Close monetag modal button
-    const closeMonetagModal = document.getElementById('close-monetag-modal');
-    if (closeMonetagModal) {
-        closeMonetagModal.addEventListener('click', closeMonetagModalFunc);
-    }
-    
-    // Close ad progress button
-    const closeAdBtn = document.getElementById('close-ad-btn');
-    if (closeAdBtn) {
-        closeAdBtn.addEventListener('click', closeAdProgressModal);
-    }
     
     console.log("✅ All event listeners setup complete");
 }
@@ -126,14 +80,10 @@ function handleTap() {
     }
 
     let reward = calculateTapReward();
-    console.log(`💰 Reward: ${reward} TON`);
-    
-    // Update game state
     gameState.balance += reward;
     gameState.energy -= 1;
     gameState.totalTaps += 1;
     
-    // Check untuk show monetag modal (30% chance + cooldown)
     const now = Date.now();
     const timeSinceLastShow = now - gameState.lastMonetagShow;
     
@@ -290,8 +240,6 @@ function showMonetagModal() {
     const modal = document.getElementById('monetag-modal');
     if (modal) {
         modal.style.display = 'flex';
-        
-        // Add slight animation
         setTimeout(() => {
             modal.style.opacity = '1';
             modal.style.transform = 'scale(1)';
@@ -315,12 +263,9 @@ function closeMonetagModalFunc() {
 function startMonetagAd(url, reward) {
     console.log(`📺 Starting Monetag ad: ${url} for ${reward} TON`);
     
-    // Close monetag modal pertama
     closeMonetagModalFunc();
-    
     currentAd = { url, reward, startTime: Date.now() };
     
-    // Show progress modal
     const progressModal = document.getElementById('ad-progress-modal');
     const adRewardElement = document.getElementById('ad-reward');
     const adTimerElement = document.getElementById('ad-timer');
@@ -329,10 +274,8 @@ function startMonetagAd(url, reward) {
         adRewardElement.textContent = reward;
         progressModal.style.display = 'flex';
         
-        // Open ad in new tab
         const adWindow = window.open(url, '_blank');
         
-        // Start progress timer
         let timeLeft = MONETAG_CONFIG.adDuration / 1000;
         const progressFill = document.getElementById('ad-progress-fill');
         
@@ -340,20 +283,12 @@ function startMonetagAd(url, reward) {
             timeLeft--;
             const progress = ((MONETAG_CONFIG.adDuration / 1000 - timeLeft) / (MONETAG_CONFIG.adDuration / 1000)) * 100;
             
-            if (progressFill) {
-                progressFill.style.width = `${progress}%`;
-            }
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (adTimerElement) adTimerElement.textContent = `Ad completes in ${timeLeft}s...`;
             
-            if (adTimerElement) {
-                adTimerElement.textContent = `Ad completes in ${timeLeft}s...`;
-            }
-            
-            if (timeLeft <= 0) {
-                completeMonetagAd(reward);
-            }
+            if (timeLeft <= 0) completeMonetagAd(reward);
         }, 1000);
         
-        // Check if user closed the ad window
         const checkAdWindow = setInterval(() => {
             if (adWindow.closed) {
                 clearInterval(checkAdWindow);
@@ -366,25 +301,19 @@ function startMonetagAd(url, reward) {
 function completeMonetagAd(reward) {
     console.log(`✅ Monetag ad completed! Awarding ${reward} TON`);
     
-    if (adTimer) {
-        clearInterval(adTimer);
-    }
+    if (adTimer) clearInterval(adTimer);
     
-    // Award TON coins
     gameState.balance += reward;
     
-    // Show completion message
     const adTimerElement = document.getElementById('ad-timer');
     if (adTimerElement) {
         adTimerElement.textContent = `✅ +${reward} TON Added!`;
         adTimerElement.style.color = '#4CAF50';
     }
     
-    // Update display
     updateDisplay();
     saveGameState();
     
-    // Auto close modal after 2 seconds
     setTimeout(() => {
         closeAdProgressModal();
         alert(`🎉 Congratulations! You earned ${reward} TON from watching the ad!`);
@@ -395,23 +324,15 @@ function closeAdProgressModal() {
     console.log("📺 Closing ad progress modal");
     
     const progressModal = document.getElementById('ad-progress-modal');
-    if (progressModal) {
-        progressModal.style.display = 'none';
-    }
-    
-    if (adTimer) {
-        clearInterval(adTimer);
-    }
+    if (progressModal) progressModal.style.display = 'none';
+    if (adTimer) clearInterval(adTimer);
     
     currentAd = null;
     
-    // Reset progress bar
     const progressFill = document.getElementById('ad-progress-fill');
     const adTimerElement = document.getElementById('ad-timer');
     
-    if (progressFill) {
-        progressFill.style.width = '0%';
-    }
+    if (progressFill) progressFill.style.width = '0%';
     if (adTimerElement) {
         adTimerElement.textContent = 'Loading ad...';
         adTimerElement.style.color = '';
@@ -427,7 +348,7 @@ function startEnergyRecharge() {
             updateDisplay();
             saveGameState();
         }
-    }, 300000); // 5 minutes
+    }, 300000);
 }
 
 function checkLevelUp() {
@@ -447,9 +368,7 @@ function checkLevelUp() {
 function showTapEffect(reward) {
     const tapBtn = document.getElementById('tap-btn');
     tapBtn.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-        tapBtn.style.transform = 'scale(1)';
-    }, 150);
+    setTimeout(() => tapBtn.style.transform = 'scale(1)', 150);
 }
 
 function generateReferralCode() {
@@ -465,29 +384,22 @@ function generateReferralCode() {
 // ==================== FIREBASE FUNCTIONS ====================
 
 async function saveGameState() {
-    // Save to localStorage
     localStorage.setItem('tonTapMaster', JSON.stringify(gameState));
-    
-    // Save to Firebase if available
     if (gameState.userId && window.FirebaseService) {
         await FirebaseService.saveUserData(gameState);
     }
 }
 
 async function loadGameState() {
-    // Try to load from Firebase first
     if (gameState.userId && window.FirebaseService) {
         const firebaseData = await FirebaseService.loadUserData();
-        
         if (firebaseData) {
-            // Merge Firebase data with current game state
             gameState = { ...gameState, ...firebaseData };
             console.log("📂 Game state loaded from Firebase");
             return;
         }
     }
     
-    // Fallback to localStorage
     const saved = localStorage.getItem('tonTapMaster');
     if (saved) {
         const localData = JSON.parse(saved);
@@ -503,7 +415,6 @@ function setupLeaderboard() {
         }, 10);
     } else {
         console.log("❌ Firebase not available for leaderboard");
-        // Show demo leaderboard
         updateLeaderboardDisplay([
             { username: "CryptoMaster", balance: 1234 },
             { username: "TapKing", balance: 987 },
@@ -534,15 +445,9 @@ function updateLeaderboardDisplay(leaderboard) {
         else if (index === 2) medal = '🥉';
         
         let displayName = player.username;
-        if (displayName.length > 12) {
-            displayName = displayName.substring(0, 12) + '...';
-        }
+        if (displayName.length > 12) displayName = displayName.substring(0, 12) + '...';
         
-        item.innerHTML = `
-            <span>${medal} ${displayName}</span>
-            <span>${player.balance.toFixed(1)} TON</span>
-        `;
-        
+        item.innerHTML = `<span>${medal} ${displayName}</span><span>${player.balance.toFixed(1)} TON</span>`;
         leaderboardList.appendChild(item);
     });
 }
@@ -559,28 +464,19 @@ async function setupTelegram() {
         if (user) {
             displayTelegramUser(user);
             
-            // Set user ID for Firebase
             const userId = user.id.toString();
             gameState.userId = userId;
             gameState.username = user.username || user.first_name || 'Telegram User';
             
-            // Initialize Firebase with user ID
-            if (window.FirebaseService) {
-                FirebaseService.setUserId(userId);
-            }
-            
-            // Handle referral from start parameter
+            if (window.FirebaseService) FirebaseService.setUserId(userId);
             handleStartParameter();
         }
     } else {
         console.log("🌐 Running in browser mode");
-        // Fallback for browser testing
         const testUserId = 'test_' + Math.random().toString(36).substr(2, 9);
         gameState.userId = testUserId;
         gameState.username = 'Test User';
-        if (window.FirebaseService) {
-            FirebaseService.setUserId(testUserId);
-        }
+        if (window.FirebaseService) FirebaseService.setUserId(testUserId);
     }
 }
 
@@ -594,20 +490,12 @@ function handleStartParameter() {
 function processReferral(referralCode) {
     try {
         const referrerId = referralCode.replace('TON-', '');
-        
-        // Don't process self-referral
         if (referrerId === gameState.userId) return;
         
-        // Track referral in Firebase
-        if (window.FirebaseService) {
-            FirebaseService.trackReferral(referrerId, gameState.userId);
-        }
+        if (window.FirebaseService) FirebaseService.trackReferral(referrerId, gameState.userId);
         
-        // Give bonus to new user
         gameState.balance += 5;
         alert("🎉 Welcome bonus! +5 TON for joining with referral link!");
-        
-        // Update display and save
         updateDisplay();
         saveGameState();
         
@@ -623,17 +511,11 @@ function displayTelegramUser(userData) {
     
     if (!userElement || !userName) return;
     
-    if (userData.username) {
-        userName.textContent = `@${userData.username}`;
-    } else if (userData.first_name) {
-        userName.textContent = userData.first_name;
-    }
+    if (userData.username) userName.textContent = `@${userData.username}`;
+    else if (userData.first_name) userName.textContent = userData.first_name;
     
-    if (userData.photo_url && userPhoto) {
-        userPhoto.src = userData.photo_url;
-    } else if (userPhoto) {
-        userPhoto.style.display = 'none';
-    }
+    if (userData.photo_url && userPhoto) userPhoto.src = userData.photo_url;
+    else if (userPhoto) userPhoto.style.display = 'none';
     
     userElement.style.display = 'flex';
 }
@@ -641,7 +523,6 @@ function displayTelegramUser(userData) {
 // ==================== DISPLAY FUNCTIONS ====================
 
 function updateDisplay() {
-    // Update balance and level
     const balanceElement = document.getElementById('balance');
     const levelElement = document.getElementById('level');
     const energyElement = document.getElementById('energy');
@@ -661,7 +542,6 @@ function updateDisplay() {
 
 // ==================== INITIALIZATION ====================
 
-// Initialize game when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log("📄 DOM fully loaded, initializing game...");
     initGame();
