@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TON Tap Master - Redesigned</title>
+    <title>Earn Mester</title>
     <style>
         * {
             margin: 0;
@@ -17,332 +17,218 @@
             min-height: 100vh;
             padding: 20px;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
             max-width: 400px;
-            margin: 0 auto;
-        }
-
-        /* Header Section */
-        .header {
+            width: 100%;
             background: white;
             border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .app-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .ton-balance {
-            font-size: 32px;
-            font-weight: bold;
-            color: #0088cc;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 15px;
-            margin: 10px 0;
-        }
-
-        /* Gameplay Area */
-        .gameplay-section {
-            background: white;
-            border-radius: 20px;
-            padding: 30px 20px;
-            text-align: center;
-            margin-bottom: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .tap-button {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            border: none;
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
-            transition: transform 0.1s;
-        }
-
-        .tap-button:active {
-            transform: scale(0.95);
-        }
-
-        .earn-amount {
-            font-size: 20px;
-            font-weight: bold;
-            color: #27ae60;
-            margin: 10px 0;
-        }
-
-        .energy-bar {
-            background: #ecf0f1;
-            border-radius: 10px;
-            height: 20px;
-            margin: 15px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
-        .energy-fill {
-            background: linear-gradient(90deg, #00b894, #55efc4);
-            height: 100%;
-            width: 84%;
-            border-radius: 10px;
-            transition: width 0.3s ease;
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
         }
 
-        .energy-text {
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        /* Card Components */
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .card-title {
-            font-size: 18px;
+        .app-title {
+            font-size: 28px;
             font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* Boost Section */
-        .boost-item {
+        .online-help {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .help-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 25px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stat-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #ecf0f1;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .boost-item:last-child {
-            border-bottom: none;
+        .stat-item:last-child {
+            margin-bottom: 0;
         }
 
-        .boost-info {
-            flex: 1;
-            text-align: left;
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
         }
 
-        .boost-name {
+        .stat-value {
+            font-size: 18px;
             font-weight: bold;
             color: #2c3e50;
         }
 
-        .boost-desc {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-
-        .boost-status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 8px;
-            background: #ffeaa7;
-        }
-
-        .boost-status.active {
-            background: #55efc4;
-            color: white;
-        }
-
-        .activate-btn {
-            background: #00b894;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-
-        .activate-btn:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-        }
-
-        .activate-btn.active {
-            background: #e74c3c;
-        }
-
-        /* Withdrawal Section */
-        .withdrawal-progress {
+        /* Progress Section */
+        .progress-section {
+            padding: 25px 20px;
             text-align: center;
-            margin: 15px 0;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
         }
 
-        .progress-bar {
-            background: #ecf0f1;
-            border-radius: 10px;
-            height: 12px;
-            margin: 10px 0;
+        .progress-title {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .progress-bg {
+            width: 100%;
+            height: 100%;
+            border: 8px solid #e9ecef;
+            border-radius: 50%;
+            position: relative;
             overflow: hidden;
         }
 
         .progress-fill {
-            background: linear-gradient(90deg, #e74c3c, #e67e22);
-            height: 100%;
-            width: 0%;
-            border-radius: 10px;
-            transition: width 0.3s ease;
-        }
-
-        .invite-btn {
-            background: linear-gradient(45deg, #e74c3c, #e67e22);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s;
+            height: 100%;
+            border: 8px solid #00b894;
+            border-radius: 50%;
+            clip-path: inset(0 0 50% 0);
+            transform: rotate(0deg);
+            transition: transform 0.5s ease;
         }
 
-        .invite-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Referral Section */
-        .referral-input-group {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .referral-input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #bdc3c7;
-            border-radius: 10px;
-            font-size: 14px;
-            background: #f8f9fa;
-        }
-
-        .copy-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background 0.3s;
-        }
-
-        .copy-btn.copied {
-            background: #27ae60;
-        }
-
-        /* Leaderboard */
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        .leaderboard-item:last-child {
-            border-bottom: none;
-        }
-
-        .rank {
-            font-size: 16px;
-            font-weight: bold;
-            margin-right: 10px;
-            width: 30px;
-            text-align: center;
-        }
-
-        .rank-1 { color: #FFD700; }
-        .rank-2 { color: #C0C0C0; }
-        .rank-3 { color: #CD7F32; }
-
-        .player-info {
-            flex: 1;
-            text-align: left;
-        }
-
-        .player-name {
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
             font-weight: bold;
             color: #2c3e50;
         }
 
-        .player-score {
-            font-weight: bold;
-            color: #0088cc;
+        /* Buttons Section */
+        .buttons-section {
+            padding: 25px 20px;
+            background: white;
         }
 
-        .current-user {
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin: 0 -10px;
-            padding: 0 10px;
-        }
-
-        .view-ranking-btn {
-            background: transparent;
-            border: 2px solid #3498db;
-            color: #3498db;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: bold;
+        .action-button {
+            display: block;
             width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            text-align: center;
+            text-decoration: none;
         }
 
-        .view-ranking-btn:hover {
-            background: #3498db;
+        .action-button:last-child {
+            margin-bottom: 0;
+        }
+
+        .watch-ad-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
             color: white;
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
         }
 
-        /* Status Indicators */
-        .status-locked {
-            color: #e74c3c;
-            font-weight: bold;
-            text-align: center;
-            margin: 10px 0;
+        .watch-ad-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 184, 148, 0.4);
         }
 
-        .status-unlocked {
-            color: #27ae60;
-            font-weight: bold;
-            text-align: center;
-            margin: 10px 0;
+        .auto-ads-btn {
+            background: linear-gradient(135deg, #0984e3 0%, #0767b1 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(9, 132, 227, 0.3);
         }
 
-        .status-active {
-            color: #27ae60;
-            font-weight: bold;
+        .auto-ads-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(9, 132, 227, 0.4);
+        }
+
+        .stop-auto-btn {
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(225, 112, 85, 0.3);
+        }
+
+        .stop-auto-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(225, 112, 85, 0.4);
+        }
+
+        .withdraw-btn {
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(253, 203, 110, 0.3);
+        }
+
+        .withdraw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(253, 203, 110, 0.4);
+        }
+
+        .telegram-btn {
+            background: linear-gradient(135deg, #0088cc 0%, #006699 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.3);
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 136, 204, 0.4);
         }
 
         /* Notification */
@@ -351,7 +237,7 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: #27ae60;
+            background: #00b894;
             color: white;
             padding: 15px 25px;
             border-radius: 10px;
@@ -365,301 +251,332 @@
             opacity: 1;
         }
 
-        /* Tap Animation */
-        .tap-animation {
-            position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            color: #27ae60;
-            pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
+        /* Auto Ads Indicator */
+        .auto-ads-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
+        .auto-ads-indicator.show {
+            opacity: 1;
+        }
+
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        /* Button States */
+        .button-disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .button-disabled:hover {
+            transform: none !important;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
         }
     </style>
 </head>
 <body>
-    <div class="notification" id="notification">Link copied to clipboard!</div>
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Auto Ads Indicator -->
+    <div class="auto-ads-indicator" id="autoAdsIndicator">
+        <div>🔄 Auto Ads Running</div>
+        <div class="countdown" id="autoAdsCountdown">30s</div>
+        <div>Earning points automatically...</div>
+    </div>
 
     <div class="container">
-        <!-- Header Section -->
+        <!-- Header -->
         <div class="header">
-            <div class="app-title">💎 TON TAP MASTER</div>
-            <div class="ton-balance" id="tonBalance">100.20 TON</div>
+            <div class="help-badge">Online Help 360</div>
+            <div class="app-title">Earn Mester</div>
+            <div class="online-help">Watch ads and earn points!</div>
         </div>
 
-        <!-- Main Gameplay Area -->
-        <div class="gameplay-section">
-            <button class="tap-button" id="tapButton">TAP TO EARN</button>
-            <div class="earn-amount" id="earnAmount">⚡ +0.1 TON ⚡</div>
-            <div class="energy-text">Energy: <span id="energyText">84</span>/100</div>
-            <div class="energy-bar">
-                <div class="energy-fill" id="energyFill"></div>
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-item">
+                <div class="stat-label">Watched Ads</div>
+                <div class="stat-value" id="watchedAds">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Earned Points</div>
+                <div class="stat-value" id="earnedPoints">0</div>
             </div>
         </div>
 
-        <!-- Boost Section -->
-        <div class="card">
-            <div class="card-title">🚀 DAILY BOOSTS</div>
-            <div class="boost-item">
-                <div class="boost-info">
-                    <div class="boost-name">Share to Facebook</div>
-                    <div class="boost-desc">2x Earnings (1 Hour)</div>
-                </div>
-                <div class="boost-status" id="boostStatus">Not Active</div>
-            </div>
-            <button class="activate-btn" id="activateBoost">ACTIVATE BOOST</button>
-        </div>
-
-        <!-- Withdrawal Status -->
-        <div class="card">
-            <div class="card-title">💰 WITHDRAWAL STATUS</div>
-            <div class="status-locked" id="withdrawalStatus">🔒 LOCKED - 5 Referrals Required</div>
-            <div class="withdrawal-progress">
-                <div>Progress: <span id="referralCount">0</span>/5 Referrals</div>
-                <div class="progress-bar">
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-title">Daily Progress</div>
+            <div class="progress-circle">
+                <div class="progress-bg">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
-                <div id="progressPercent">0% Complete</div>
-            </div>
-            <button class="invite-btn" id="inviteButton">INVITE FRIENDS ✨</button>
-        </div>
-
-        <!-- Referral Section -->
-        <div class="card">
-            <div class="card-title">👥 INVITE FRIENDS</div>
-            <div>Your Referral Link:</div>
-            <div class="referral-input-group">
-                <input type="text" class="referral-input" id="referralInput" value="https://t.me/TonTapMasterBoCopy" readonly>
-                <button class="copy-btn" id="copyButton">COPY</button>
-            </div>
-            <div style="font-size: 12px; color: #7f8c8d; text-align: center;">
-                Earn rewards for each friend who joins using your link!
+                <div class="progress-text" id="progressText">0%</div>
             </div>
         </div>
 
-        <!-- Leaderboard -->
-        <div class="card">
-            <div class="card-title">🏆 LIVE LEADERBOARD</div>
-            <div class="leaderboard-item">
-                <div class="rank rank-1">🥇</div>
-                <div class="player-info">
-                    <div class="player-name">CryptoMaster</div>
-                </div>
-                <div class="player-score">1234.0 TON</div>
-            </div>
-            <div class="leaderboard-item">
-                <div class="rank rank-2">🥈</div>
-                <div class="player-info">
-                    <div class="player-name">TapKing</div>
-                </div>
-                <div class="player-score">987.0 TON</div>
-            </div>
-            <div class="leaderboard-item">
-                <div class="rank rank-3">🥉</div>
-                <div class="player-info">
-                    <div class="player-name">TonHunter</div>
-                </div>
-                <div class="player-score">765.0 TON</div>
-            </div>
-            <div class="leaderboard-item current-user">
-                <div class="rank">4.</div>
-                <div class="player-info">
-                    <div class="player-name">You</div>
-                </div>
-                <div class="player-score" id="userScore">100.2 TON</div>
-            </div>
-            <button class="view-ranking-btn" id="viewRanking">VIEW FULL RANKING</button>
+        <!-- Buttons Section -->
+        <div class="buttons-section">
+            <button class="action-button watch-ad-btn" id="watchAdBtn">
+                📺 Watch Ad
+            </button>
+            
+            <button class="action-button auto-ads-btn" id="autoAdsBtn">
+                🔄 Auto Ads
+            </button>
+            
+            <button class="action-button stop-auto-btn" id="stopAutoBtn" disabled>
+                ⏹️ Stop Auto
+            </button>
+            
+            <button class="action-button withdraw-btn" id="withdrawBtn">
+                💰 Withdraw
+            </button>
+            
+            <a href="https://t.me/your_support_group" class="action-button telegram-btn" target="_blank">
+                📢 Telegram Support Group
+            </a>
         </div>
     </div>
 
     <script>
         // Game State
         let gameState = {
-            tonBalance: 100.20,
-            energy: 84,
-            maxEnergy: 100,
-            earnPerTap: 0.1,
-            boostActive: false,
-            referrals: 0,
-            requiredReferrals: 5
+            watchedAds: 0,
+            earnedPoints: 0,
+            dailyProgress: 0,
+            maxDailyProgress: 100,
+            isAutoAdsRunning: false,
+            autoAdsInterval: null,
+            pointsPerAd: 10,
+            adsPerDay: 0,
+            maxAdsPerDay: 50
         };
 
         // DOM Elements
-        const tapButton = document.getElementById('tapButton');
-        const tonBalance = document.getElementById('tonBalance');
-        const earnAmount = document.getElementById('earnAmount');
-        const energyText = document.getElementById('energyText');
-        const energyFill = document.getElementById('energyFill');
-        const boostStatus = document.getElementById('boostStatus');
-        const activateBoost = document.getElementById('activateBoost');
-        const withdrawalStatus = document.getElementById('withdrawalStatus');
-        const referralCount = document.getElementById('referralCount');
-        const progressFill = document.getElementById('progressFill');
-        const progressPercent = document.getElementById('progressPercent');
-        const inviteButton = document.getElementById('inviteButton');
-        const copyButton = document.getElementById('copyButton');
-        const referralInput = document.getElementById('referralInput');
-        const userScore = document.getElementById('userScore');
-        const viewRanking = document.getElementById('viewRanking');
-        const notification = document.getElementById('notification');
+        const watchedAdsEl = document.getElementById('watchedAds');
+        const earnedPointsEl = document.getElementById('earnedPoints');
+        const progressFillEl = document.getElementById('progressFill');
+        const progressTextEl = document.getElementById('progressText');
+        const watchAdBtn = document.getElementById('watchAdBtn');
+        const autoAdsBtn = document.getElementById('autoAdsBtn');
+        const stopAutoBtn = document.getElementById('stopAutoBtn');
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        const notificationEl = document.getElementById('notification');
+        const autoAdsIndicatorEl = document.getElementById('autoAdsIndicator');
+        const autoAdsCountdownEl = document.getElementById('autoAdsCountdown');
 
         // Initialize game
         function initGame() {
             updateUI();
-            updateProgressBar();
+            loadGameState();
         }
 
-        // Tap functionality
-        tapButton.addEventListener('click', function() {
-            if (gameState.energy > 0) {
-                // Calculate earnings
-                let earnings = gameState.boostActive ? gameState.earnPerTap * 2 : gameState.earnPerTap;
-                gameState.tonBalance += earnings;
-                gameState.energy -= 1;
+        // Watch Ad functionality
+        watchAdBtn.addEventListener('click', function() {
+            if (gameState.adsPerDay >= gameState.maxAdsPerDay) {
+                showNotification("Daily limit reached! Come back tomorrow.");
+                return;
+            }
 
-                // Create tap animation
-                createTapAnimation(earnings);
-
-                // Update UI
+            simulateAdWatch().then(() => {
+                gameState.watchedAds++;
+                gameState.earnedPoints += gameState.pointsPerAd;
+                gameState.adsPerDay++;
+                updateDailyProgress();
                 updateUI();
-                
-                // Button animation
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 100);
-            } else {
-                showNotification("No energy left! Wait for recharge.");
-            }
+                showNotification(`+${gameState.pointsPerAd} points earned!`);
+            });
         });
 
-        // Boost functionality
-        activateBoost.addEventListener('click', function() {
-            if (!gameState.boostActive) {
-                gameState.boostActive = true;
-                boostStatus.textContent = "Active!";
-                boostStatus.classList.add('active');
-                this.textContent = "BOOST ACTIVE";
-                this.classList.add('active');
-                showNotification("2x Boost Activated for 1 Hour!");
-                
-                // Auto disable after 1 hour (for demo, using 10 seconds)
-                setTimeout(() => {
-                    gameState.boostActive = false;
-                    boostStatus.textContent = "Not Active";
-                    boostStatus.classList.remove('active');
-                    this.textContent = "ACTIVATE BOOST";
-                    this.classList.remove('active');
-                    showNotification("Boost has expired!");
-                }, 10000); // 10 seconds for demo
+        // Auto Ads functionality
+        autoAdsBtn.addEventListener('click', function() {
+            if (gameState.adsPerDay >= gameState.maxAdsPerDay) {
+                showNotification("Daily limit reached! Come back tomorrow.");
+                return;
             }
+
+            startAutoAds();
         });
 
-        // Invite friends functionality
-        inviteButton.addEventListener('click', function() {
-            if (gameState.referrals < gameState.requiredReferrals) {
-                gameState.referrals++;
-                updateProgressBar();
-                showNotification(`Friend invited! ${gameState.requiredReferrals - gameState.referrals} more to unlock withdrawal.`);
-                
-                if (gameState.referrals >= gameState.requiredReferrals) {
-                    withdrawalStatus.textContent = "🎉 UNLOCKED - Ready to Withdraw!";
-                    withdrawalStatus.className = "status-unlocked";
-                    showNotification("Withdrawal unlocked! You can now withdraw your TON.");
+        // Stop Auto Ads functionality
+        stopAutoBtn.addEventListener('click', function() {
+            stopAutoAds();
+        });
+
+        // Withdraw functionality
+        withdrawBtn.addEventListener('click', function() {
+            if (gameState.earnedPoints < 100) {
+                showNotification(`Need 100 points to withdraw. You have ${gameState.earnedPoints} points.`);
+                return;
+            }
+
+            showNotification("Redirecting to withdrawal page...");
+            // Simulate withdrawal process
+            setTimeout(() => {
+                showNotification("Withdrawal request submitted!");
+            }, 1500);
+        });
+
+        // Simulate ad watching
+        function simulateAdWatch() {
+            return new Promise((resolve) => {
+                watchAdBtn.disabled = true;
+                watchAdBtn.textContent = "⏳ Watching Ad...";
+                watchAdBtn.classList.add('button-disabled');
+
+                let countdown = 5;
+                const countdownInterval = setInterval(() => {
+                    watchAdBtn.textContent = `⏳ ${countdown}s...`;
+                    countdown--;
+
+                    if (countdown < 0) {
+                        clearInterval(countdownInterval);
+                        watchAdBtn.disabled = false;
+                        watchAdBtn.textContent = "📺 Watch Ad";
+                        watchAdBtn.classList.remove('button-disabled');
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        // Start auto ads
+        function startAutoAds() {
+            if (gameState.isAutoAdsRunning) return;
+
+            gameState.isAutoAdsRunning = true;
+            autoAdsBtn.disabled = true;
+            autoAdsBtn.classList.add('button-disabled');
+            stopAutoBtn.disabled = false;
+            stopAutoBtn.classList.remove('button-disabled');
+
+            showNotification("Auto Ads started! Earning points automatically...");
+            autoAdsIndicatorEl.classList.add('show');
+
+            let autoAdsTime = 30; // 30 seconds for demo
+            autoAdsInterval = setInterval(() => {
+                if (gameState.adsPerDay >= gameState.maxAdsPerDay) {
+                    stopAutoAds();
+                    showNotification("Daily limit reached! Auto Ads stopped.");
+                    return;
                 }
-            }
-        });
 
-        // Copy referral link functionality
-        copyButton.addEventListener('click', function() {
-            referralInput.select();
-            referralInput.setSelectionRange(0, 99999);
-            document.execCommand('copy');
-            
-            // Visual feedback
-            this.textContent = 'COPIED!';
-            this.classList.add('copied');
-            showNotification("Referral link copied to clipboard!");
-            
-            setTimeout(() => {
-                this.textContent = 'COPY';
-                this.classList.remove('copied');
-            }, 2000);
-        });
+                gameState.watchedAds++;
+                gameState.earnedPoints += gameState.pointsPerAd;
+                gameState.adsPerDay++;
+                updateDailyProgress();
+                updateUI();
 
-        // View ranking functionality
-        viewRanking.addEventListener('click', function() {
-            showNotification("Opening full leaderboard...");
-            // Simulate API call
-            setTimeout(() => {
-                showNotification("Leaderboard loaded!");
+                autoAdsTime--;
+                autoAdsCountdownEl.textContent = autoAdsTime + 's';
+
+                if (autoAdsTime <= 0) {
+                    stopAutoAds();
+                    showNotification("Auto Ads session completed!");
+                }
             }, 1000);
-        });
+        }
+
+        // Stop auto ads
+        function stopAutoAds() {
+            if (!gameState.isAutoAdsRunning) return;
+
+            gameState.isAutoAdsRunning = false;
+            clearInterval(autoAdsInterval);
+            autoAdsBtn.disabled = false;
+            autoAdsBtn.classList.remove('button-disabled');
+            stopAutoBtn.disabled = true;
+            stopAutoBtn.classList.add('button-disabled');
+            autoAdsIndicatorEl.classList.remove('show');
+
+            showNotification("Auto Ads stopped.");
+        }
+
+        // Update daily progress
+        function updateDailyProgress() {
+            gameState.dailyProgress = (gameState.adsPerDay / gameState.maxAdsPerDay) * 100;
+            const rotation = (gameState.dailyProgress / 100) * 180; // Half circle for 100%
+            progressFillEl.style.transform = `rotate(${rotation}deg)`;
+        }
 
         // Update UI
         function updateUI() {
-            tonBalance.textContent = gameState.tonBalance.toFixed(2) + ' TON';
-            energyText.textContent = gameState.energy;
-            userScore.textContent = gameState.tonBalance.toFixed(1) + ' TON';
-            
-            // Update energy bar
-            const energyPercentage = (gameState.energy / gameState.maxEnergy) * 100;
-            energyFill.style.width = energyPercentage + '%';
-            
-            // Update earn amount display
-            earnAmount.textContent = `⚡ +${(gameState.boostActive ? gameState.earnPerTap * 2 : gameState.earnPerTap).toFixed(1)} TON ⚡`;
-            
-            // Update referral count
-            referralCount.textContent = gameState.referrals;
-        }
+            watchedAdsEl.textContent = gameState.watchedAds;
+            earnedPointsEl.textContent = gameState.earnedPoints;
+            progressTextEl.textContent = Math.round(gameState.dailyProgress) + '%';
 
-        // Update progress bar
-        function updateProgressBar() {
-            const progressPercentage = (gameState.referrals / gameState.requiredReferrals) * 100;
-            progressFill.style.width = progressPercentage + '%';
-            progressPercent.textContent = Math.round(progressPercentage) + '% Complete';
-        }
-
-        // Create tap animation
-        function createTapAnimation(earnings) {
-            const animation = document.createElement('div');
-            animation.className = 'tap-animation';
-            animation.textContent = `+${earnings.toFixed(1)} TON`;
-            animation.style.left = (tapButton.offsetLeft + tapButton.offsetWidth / 2) + 'px';
-            animation.style.top = (tapButton.offsetTop + tapButton.offsetHeight / 2) + 'px';
-            document.body.appendChild(animation);
-            
-            setTimeout(() => {
-                document.body.removeChild(animation);
-            }, 1000);
+            // Update button states based on daily limit
+            if (gameState.adsPerDay >= gameState.maxAdsPerDay) {
+                watchAdBtn.disabled = true;
+                autoAdsBtn.disabled = true;
+                watchAdBtn.classList.add('button-disabled');
+                autoAdsBtn.classList.add('button-disabled');
+            }
         }
 
         // Show notification
         function showNotification(message) {
-            notification.textContent = message;
-            notification.classList.add('show');
+            notificationEl.textContent = message;
+            notificationEl.classList.add('show');
             setTimeout(() => {
-                notification.classList.remove('show');
+                notificationEl.classList.remove('show');
             }, 3000);
         }
 
-        // Energy regeneration simulation
-        setInterval(() => {
-            if (gameState.energy < gameState.maxEnergy) {
-                gameState.energy += 1;
+        // Save/Load game state (simple localStorage implementation)
+        function saveGameState() {
+            localStorage.setItem('earnMesterState', JSON.stringify(gameState));
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('earnMesterState');
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                
+                // Reset daily progress if it's a new day
+                const today = new Date().toDateString();
+                const lastPlayed = savedState.lastPlayed;
+                
+                if (lastPlayed !== today) {
+                    gameState.adsPerDay = 0;
+                    gameState.dailyProgress = 0;
+                } else {
+                    gameState.adsPerDay = savedState.adsPerDay || 0;
+                    gameState.dailyProgress = savedState.dailyProgress || 0;
+                }
+                
+                gameState.watchedAds = savedState.watchedAds || 0;
+                gameState.earnedPoints = savedState.earnedPoints || 0;
+                gameState.lastPlayed = today;
+                
+                updateDailyProgress();
                 updateUI();
             }
-        }, 5000); // Regenerate 1 energy every 5 seconds
+        }
+
+        // Auto-save game state every 30 seconds
+        setInterval(saveGameState, 30000);
+
+        // Save when page is about to be closed
+        window.addEventListener('beforeunload', saveGameState);
 
         // Initialize the game
         initGame();
