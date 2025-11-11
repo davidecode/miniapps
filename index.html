@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earn Mester</title>
+    <title>Earn Master</title>
     <style>
         * {
             margin: 0;
@@ -251,30 +251,43 @@
             opacity: 1;
         }
 
-        /* Auto Ads Indicator */
-        .auto-ads-indicator {
+        /* Monetag Ad Container */
+        .ad-container {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.3s;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
-        .auto-ads-indicator.show {
-            opacity: 1;
+        .ad-container.show {
+            display: flex;
         }
 
-        .countdown {
-            font-size: 24px;
+        .ad-frame {
+            width: 90%;
+            height: 70%;
+            border: none;
+            border-radius: 15px;
+            background: white;
+        }
+
+        .close-ad {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
             font-weight: bold;
-            margin: 10px 0;
+            cursor: pointer;
         }
 
         /* Button States */
@@ -294,18 +307,17 @@
     <!-- Notification -->
     <div class="notification" id="notification"></div>
 
-    <!-- Auto Ads Indicator -->
-    <div class="auto-ads-indicator" id="autoAdsIndicator">
-        <div>🔄 Auto Ads Running</div>
-        <div class="countdown" id="autoAdsCountdown">30s</div>
-        <div>Earning points automatically...</div>
+    <!-- Monetag Ad Container -->
+    <div class="ad-container" id="adContainer">
+        <iframe class="ad-frame" id="adFrame" src=""></iframe>
+        <button class="close-ad" id="closeAd">Close Ad</button>
     </div>
 
     <div class="container">
         <!-- Header -->
         <div class="header">
             <div class="help-badge">Online Help 360</div>
-            <div class="app-title">Earn Mester</div>
+            <div class="app-title">Earn Master</div>
             <div class="online-help">Watch ads and earn points!</div>
         </div>
 
@@ -367,7 +379,15 @@
             autoAdsInterval: null,
             pointsPerAd: 10,
             adsPerDay: 0,
-            maxAdsPerDay: 50
+            maxAdsPerDay: 50,
+            // Ganti dengan link Monetag Anda di sini
+            monetagLinks: [
+                "https://monetag.com/your-link-1",
+                "https://monetag.com/your-link-2", 
+                "https://monetag.com/your-link-3",
+                "https://monetag.com/your-link-4",
+                "https://monetag.com/your-link-5"
+            ]
         };
 
         // DOM Elements
@@ -380,8 +400,9 @@
         const stopAutoBtn = document.getElementById('stopAutoBtn');
         const withdrawBtn = document.getElementById('withdrawBtn');
         const notificationEl = document.getElementById('notification');
-        const autoAdsIndicatorEl = document.getElementById('autoAdsIndicator');
-        const autoAdsCountdownEl = document.getElementById('autoAdsCountdown');
+        const adContainer = document.getElementById('adContainer');
+        const adFrame = document.getElementById('adFrame');
+        const closeAd = document.getElementById('closeAd');
 
         // Initialize game
         function initGame() {
@@ -389,24 +410,26 @@
             loadGameState();
         }
 
-        // Watch Ad functionality
+        // Watch Ad functionality dengan Monetag
         watchAdBtn.addEventListener('click', function() {
             if (gameState.adsPerDay >= gameState.maxAdsPerDay) {
                 showNotification("Daily limit reached! Come back tomorrow.");
                 return;
             }
 
-            simulateAdWatch().then(() => {
-                gameState.watchedAds++;
-                gameState.earnedPoints += gameState.pointsPerAd;
-                gameState.adsPerDay++;
-                updateDailyProgress();
-                updateUI();
-                showNotification(`+${gameState.pointsPerAd} points earned!`);
+            showMonetagAd().then((completed) => {
+                if (completed) {
+                    gameState.watchedAds++;
+                    gameState.earnedPoints += gameState.pointsPerAd;
+                    gameState.adsPerDay++;
+                    updateDailyProgress();
+                    updateUI();
+                    showNotification(`+${gameState.pointsPerAd} points earned!`);
+                }
             });
         });
 
-        // Auto Ads functionality
+        // Auto Ads functionality dengan Monetag
         autoAdsBtn.addEventListener('click', function() {
             if (gameState.adsPerDay >= gameState.maxAdsPerDay) {
                 showNotification("Daily limit reached! Come back tomorrow.");
@@ -435,30 +458,46 @@
             }, 1500);
         });
 
-        // Simulate ad watching
-        function simulateAdWatch() {
+        // Close ad functionality
+        closeAd.addEventListener('click', function() {
+            adContainer.classList.remove('show');
+        });
+
+        // Show Monetag ad
+        function showMonetagAd() {
             return new Promise((resolve) => {
-                watchAdBtn.disabled = true;
-                watchAdBtn.textContent = "⏳ Watching Ad...";
-                watchAdBtn.classList.add('button-disabled');
-
-                let countdown = 5;
-                const countdownInterval = setInterval(() => {
-                    watchAdBtn.textContent = `⏳ ${countdown}s...`;
-                    countdown--;
-
-                    if (countdown < 0) {
-                        clearInterval(countdownInterval);
-                        watchAdBtn.disabled = false;
-                        watchAdBtn.textContent = "📺 Watch Ad";
-                        watchAdBtn.classList.remove('button-disabled');
-                        resolve();
+                // Pilih link Monetag secara random
+                const randomLink = gameState.monetagLinks[Math.floor(Math.random() * gameState.monetagLinks.length)];
+                
+                // Set iframe source ke link Monetag
+                adFrame.src = randomLink;
+                
+                // Tampilkan container ad
+                adContainer.classList.add('show');
+                
+                // Simulasikan user menonton ad selama 30 detik
+                let adTime = 30;
+                const timerInterval = setInterval(() => {
+                    adTime--;
+                    
+                    if (adTime <= 0) {
+                        clearInterval(timerInterval);
+                        adContainer.classList.remove('show');
+                        resolve(true); // Ad completed successfully
                     }
                 }, 1000);
+
+                // Jika user menutup ad manual
+                const closeHandler = function() {
+                    clearInterval(timerInterval);
+                    resolve(false); // Ad not completed
+                };
+
+                closeAd.addEventListener('click', closeHandler);
             });
         }
 
-        // Start auto ads
+        // Start auto ads dengan Monetag
         function startAutoAds() {
             if (gameState.isAutoAdsRunning) return;
 
@@ -468,31 +507,51 @@
             stopAutoBtn.disabled = false;
             stopAutoBtn.classList.remove('button-disabled');
 
-            showNotification("Auto Ads started! Earning points automatically...");
-            autoAdsIndicatorEl.classList.add('show');
+            showNotification("Auto Ads started! Opening Monetag ads...");
 
-            let autoAdsTime = 30; // 30 seconds for demo
-            autoAdsInterval = setInterval(() => {
+            let autoAdsTime = 300; // 5 minutes for auto ads session
+            let currentAdIndex = 0;
+
+            function runAutoAd() {
                 if (gameState.adsPerDay >= gameState.maxAdsPerDay) {
                     stopAutoAds();
                     showNotification("Daily limit reached! Auto Ads stopped.");
                     return;
                 }
 
-                gameState.watchedAds++;
-                gameState.earnedPoints += gameState.pointsPerAd;
-                gameState.adsPerDay++;
-                updateDailyProgress();
-                updateUI();
+                if (!gameState.isAutoAdsRunning) return;
 
-                autoAdsTime--;
-                autoAdsCountdownEl.textContent = autoAdsTime + 's';
+                // Tampilkan Monetag ad
+                showMonetagAd().then((completed) => {
+                    if (completed) {
+                        gameState.watchedAds++;
+                        gameState.earnedPoints += gameState.pointsPerAd;
+                        gameState.adsPerDay++;
+                        updateDailyProgress();
+                        updateUI();
+                        showNotification(`Auto Ad: +${gameState.pointsPerAd} points!`);
+                    }
 
-                if (autoAdsTime <= 0) {
+                    // Lanjutkan ke ad berikutnya setelah delay
+                    if (gameState.isAutoAdsRunning && autoAdsTime > 0) {
+                        setTimeout(runAutoAd, 5000); // Delay 5 detik antara ads
+                    }
+                });
+
+                autoAdsTime -= 35; // Kurangi waktu total (30s ad + 5s delay)
+                currentAdIndex = (currentAdIndex + 1) % gameState.monetagLinks.length;
+            }
+
+            // Mulai ad pertama
+            runAutoAd();
+
+            // Auto stop setelah waktu habis
+            setTimeout(() => {
+                if (gameState.isAutoAdsRunning) {
                     stopAutoAds();
                     showNotification("Auto Ads session completed!");
                 }
-            }, 1000);
+            }, autoAdsTime * 1000);
         }
 
         // Stop auto ads
@@ -500,12 +559,10 @@
             if (!gameState.isAutoAdsRunning) return;
 
             gameState.isAutoAdsRunning = false;
-            clearInterval(autoAdsInterval);
             autoAdsBtn.disabled = false;
             autoAdsBtn.classList.remove('button-disabled');
             stopAutoBtn.disabled = true;
             stopAutoBtn.classList.add('button-disabled');
-            autoAdsIndicatorEl.classList.remove('show');
 
             showNotification("Auto Ads stopped.");
         }
@@ -513,7 +570,7 @@
         // Update daily progress
         function updateDailyProgress() {
             gameState.dailyProgress = (gameState.adsPerDay / gameState.maxAdsPerDay) * 100;
-            const rotation = (gameState.dailyProgress / 100) * 180; // Half circle for 100%
+            const rotation = (gameState.dailyProgress / 100) * 180;
             progressFillEl.style.transform = `rotate(${rotation}deg)`;
         }
 
@@ -529,6 +586,10 @@
                 autoAdsBtn.disabled = true;
                 watchAdBtn.classList.add('button-disabled');
                 autoAdsBtn.classList.add('button-disabled');
+                
+                if (gameState.isAutoAdsRunning) {
+                    stopAutoAds();
+                }
             }
         }
 
@@ -541,13 +602,20 @@
             }, 3000);
         }
 
-        // Save/Load game state (simple localStorage implementation)
+        // Save/Load game state
         function saveGameState() {
-            localStorage.setItem('earnMesterState', JSON.stringify(gameState));
+            const saveData = {
+                watchedAds: gameState.watchedAds,
+                earnedPoints: gameState.earnedPoints,
+                adsPerDay: gameState.adsPerDay,
+                dailyProgress: gameState.dailyProgress,
+                lastPlayed: new Date().toDateString()
+            };
+            localStorage.setItem('earnMasterState', JSON.stringify(saveData));
         }
 
         function loadGameState() {
-            const saved = localStorage.getItem('earnMesterState');
+            const saved = localStorage.getItem('earnmasterState');
             if (saved) {
                 const savedState = JSON.parse(saved);
                 
@@ -572,14 +640,25 @@
             }
         }
 
-        // Auto-save game state every 30 seconds
-        setInterval(saveGameState, 30000);
+        // Ganti dengan link Monetag Anda yang sebenarnya
+        function setupMonetagLinks() {
+            // Contoh link Monetag - GANTI DENGAN LINK ANDA SENDIRI
+            gameState.monetagLinks = [
+                "https://otieu.com/4/9659425",
+                "https://otieu.com/4/9641212",
+                "https://otieu.com/4/9663909"
+            ];
+            
+            console.log("Monetag links setup completed. Please replace with your actual Monetag links.");
+        }
 
-        // Save when page is about to be closed
+        // Auto-save game state
+        setInterval(saveGameState, 30000);
         window.addEventListener('beforeunload', saveGameState);
 
         // Initialize the game
         initGame();
+        setupMonetagLinks();
     </script>
 </body>
 </html>
