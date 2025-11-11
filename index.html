@@ -130,7 +130,7 @@
         /* Boost Section */
         .boost-item {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             padding: 10px 0;
             border-bottom: 1px solid #ecf0f1;
@@ -162,14 +162,31 @@
             background: #ffeaa7;
         }
 
+        .boost-status.active {
+            background: #55efc4;
+            color: white;
+        }
+
         .activate-btn {
             background: #00b894;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 12px 20px;
             border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .activate-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .activate-btn.active {
+            background: #e74c3c;
         }
 
         /* Withdrawal Section */
@@ -205,6 +222,11 @@
             width: 100%;
             cursor: pointer;
             margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .invite-btn:active {
+            transform: scale(0.98);
         }
 
         /* Referral Section */
@@ -232,6 +254,11 @@
             font-weight: bold;
             cursor: pointer;
             white-space: nowrap;
+            transition: background 0.3s;
+        }
+
+        .copy-btn.copied {
+            background: #27ae60;
         }
 
         /* Leaderboard */
@@ -284,12 +311,18 @@
             background: transparent;
             border: 2px solid #3498db;
             color: #3498db;
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
             font-weight: bold;
             width: 100%;
             cursor: pointer;
             margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .view-ranking-btn:hover {
+            background: #3498db;
+            color: white;
         }
 
         /* Status Indicators */
@@ -300,27 +333,77 @@
             margin: 10px 0;
         }
 
+        .status-unlocked {
+            color: #27ae60;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+
         .status-active {
             color: #27ae60;
             font-weight: bold;
         }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        /* Tap Animation */
+        .tap-animation {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification">Link copied to clipboard!</div>
+
     <div class="container">
         <!-- Header Section -->
         <div class="header">
             <div class="app-title">💎 TON TAP MASTER</div>
-            <div class="ton-balance">100.20 TON</div>
+            <div class="ton-balance" id="tonBalance">100.20 TON</div>
         </div>
 
         <!-- Main Gameplay Area -->
         <div class="gameplay-section">
-            <button class="tap-button">TAP TO EARN</button>
-            <div class="earn-amount">⚡ +0.1 TON ⚡</div>
-            <div class="energy-text">Energy: 84/100</div>
+            <button class="tap-button" id="tapButton">TAP TO EARN</button>
+            <div class="earn-amount" id="earnAmount">⚡ +0.1 TON ⚡</div>
+            <div class="energy-text">Energy: <span id="energyText">84</span>/100</div>
             <div class="energy-bar">
-                <div class="energy-fill"></div>
+                <div class="energy-fill" id="energyFill"></div>
             </div>
         </div>
 
@@ -332,23 +415,23 @@
                     <div class="boost-name">Share to Facebook</div>
                     <div class="boost-desc">2x Earnings (1 Hour)</div>
                 </div>
-                <div class="boost-status">Not Active</div>
+                <div class="boost-status" id="boostStatus">Not Active</div>
             </div>
-            <button class="activate-btn">ACTIVATE BOOST</button>
+            <button class="activate-btn" id="activateBoost">ACTIVATE BOOST</button>
         </div>
 
         <!-- Withdrawal Status -->
         <div class="card">
             <div class="card-title">💰 WITHDRAWAL STATUS</div>
-            <div class="status-locked">🔒 LOCKED - 5 Referrals Required</div>
+            <div class="status-locked" id="withdrawalStatus">🔒 LOCKED - 5 Referrals Required</div>
             <div class="withdrawal-progress">
-                <div>Progress: 0/5 Referrals</div>
+                <div>Progress: <span id="referralCount">0</span>/5 Referrals</div>
                 <div class="progress-bar">
-                    <div class="progress-fill"></div>
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
-                <div>0% Complete</div>
+                <div id="progressPercent">0% Complete</div>
             </div>
-            <button class="invite-btn">INVITE FRIENDS ✨</button>
+            <button class="invite-btn" id="inviteButton">INVITE FRIENDS ✨</button>
         </div>
 
         <!-- Referral Section -->
@@ -356,8 +439,8 @@
             <div class="card-title">👥 INVITE FRIENDS</div>
             <div>Your Referral Link:</div>
             <div class="referral-input-group">
-                <input type="text" class="referral-input" value="https://t.me/TonTapMasterBoCopy" readonly>
-                <button class="copy-btn">COPY</button>
+                <input type="text" class="referral-input" id="referralInput" value="https://t.me/TonTapMasterBoCopy" readonly>
+                <button class="copy-btn" id="copyButton">COPY</button>
             </div>
             <div style="font-size: 12px; color: #7f8c8d; text-align: center;">
                 Earn rewards for each friend who joins using your link!
@@ -393,45 +476,193 @@
                 <div class="player-info">
                     <div class="player-name">You</div>
                 </div>
-                <div class="player-score">100.2 TON</div>
+                <div class="player-score" id="userScore">100.2 TON</div>
             </div>
-            <button class="view-ranking-btn">VIEW FULL RANKING</button>
+            <button class="view-ranking-btn" id="viewRanking">VIEW FULL RANKING</button>
         </div>
     </div>
 
     <script>
-        // Simple functionality for demonstration
-        document.querySelector('.copy-btn').addEventListener('click', function() {
-            const referralInput = document.querySelector('.referral-input');
+        // Game State
+        let gameState = {
+            tonBalance: 100.20,
+            energy: 84,
+            maxEnergy: 100,
+            earnPerTap: 0.1,
+            boostActive: false,
+            referrals: 0,
+            requiredReferrals: 5
+        };
+
+        // DOM Elements
+        const tapButton = document.getElementById('tapButton');
+        const tonBalance = document.getElementById('tonBalance');
+        const earnAmount = document.getElementById('earnAmount');
+        const energyText = document.getElementById('energyText');
+        const energyFill = document.getElementById('energyFill');
+        const boostStatus = document.getElementById('boostStatus');
+        const activateBoost = document.getElementById('activateBoost');
+        const withdrawalStatus = document.getElementById('withdrawalStatus');
+        const referralCount = document.getElementById('referralCount');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const inviteButton = document.getElementById('inviteButton');
+        const copyButton = document.getElementById('copyButton');
+        const referralInput = document.getElementById('referralInput');
+        const userScore = document.getElementById('userScore');
+        const viewRanking = document.getElementById('viewRanking');
+        const notification = document.getElementById('notification');
+
+        // Initialize game
+        function initGame() {
+            updateUI();
+            updateProgressBar();
+        }
+
+        // Tap functionality
+        tapButton.addEventListener('click', function() {
+            if (gameState.energy > 0) {
+                // Calculate earnings
+                let earnings = gameState.boostActive ? gameState.earnPerTap * 2 : gameState.earnPerTap;
+                gameState.tonBalance += earnings;
+                gameState.energy -= 1;
+
+                // Create tap animation
+                createTapAnimation(earnings);
+
+                // Update UI
+                updateUI();
+                
+                // Button animation
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            } else {
+                showNotification("No energy left! Wait for recharge.");
+            }
+        });
+
+        // Boost functionality
+        activateBoost.addEventListener('click', function() {
+            if (!gameState.boostActive) {
+                gameState.boostActive = true;
+                boostStatus.textContent = "Active!";
+                boostStatus.classList.add('active');
+                this.textContent = "BOOST ACTIVE";
+                this.classList.add('active');
+                showNotification("2x Boost Activated for 1 Hour!");
+                
+                // Auto disable after 1 hour (for demo, using 10 seconds)
+                setTimeout(() => {
+                    gameState.boostActive = false;
+                    boostStatus.textContent = "Not Active";
+                    boostStatus.classList.remove('active');
+                    this.textContent = "ACTIVATE BOOST";
+                    this.classList.remove('active');
+                    showNotification("Boost has expired!");
+                }, 10000); // 10 seconds for demo
+            }
+        });
+
+        // Invite friends functionality
+        inviteButton.addEventListener('click', function() {
+            if (gameState.referrals < gameState.requiredReferrals) {
+                gameState.referrals++;
+                updateProgressBar();
+                showNotification(`Friend invited! ${gameState.requiredReferrals - gameState.referrals} more to unlock withdrawal.`);
+                
+                if (gameState.referrals >= gameState.requiredReferrals) {
+                    withdrawalStatus.textContent = "🎉 UNLOCKED - Ready to Withdraw!";
+                    withdrawalStatus.className = "status-unlocked";
+                    showNotification("Withdrawal unlocked! You can now withdraw your TON.");
+                }
+            }
+        });
+
+        // Copy referral link functionality
+        copyButton.addEventListener('click', function() {
             referralInput.select();
+            referralInput.setSelectionRange(0, 99999);
             document.execCommand('copy');
             
             // Visual feedback
-            const originalText = this.textContent;
             this.textContent = 'COPIED!';
-            this.style.background = '#27ae60';
+            this.classList.add('copied');
+            showNotification("Referral link copied to clipboard!");
             
             setTimeout(() => {
-                this.textContent = originalText;
-                this.style.background = '#3498db';
+                this.textContent = 'COPY';
+                this.classList.remove('copied');
             }, 2000);
         });
 
-        // Tap button animation
-        const tapButton = document.querySelector('.tap-button');
-        tapButton.addEventListener('click', function() {
-            this.style.transform = 'scale(0.95)';
+        // View ranking functionality
+        viewRanking.addEventListener('click', function() {
+            showNotification("Opening full leaderboard...");
+            // Simulate API call
             setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 100);
+                showNotification("Leaderboard loaded!");
+            }, 1000);
         });
 
-        // Progress bar animation on load
-        window.addEventListener('load', function() {
+        // Update UI
+        function updateUI() {
+            tonBalance.textContent = gameState.tonBalance.toFixed(2) + ' TON';
+            energyText.textContent = gameState.energy;
+            userScore.textContent = gameState.tonBalance.toFixed(1) + ' TON';
+            
+            // Update energy bar
+            const energyPercentage = (gameState.energy / gameState.maxEnergy) * 100;
+            energyFill.style.width = energyPercentage + '%';
+            
+            // Update earn amount display
+            earnAmount.textContent = `⚡ +${(gameState.boostActive ? gameState.earnPerTap * 2 : gameState.earnPerTap).toFixed(1)} TON ⚡`;
+            
+            // Update referral count
+            referralCount.textContent = gameState.referrals;
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            const progressPercentage = (gameState.referrals / gameState.requiredReferrals) * 100;
+            progressFill.style.width = progressPercentage + '%';
+            progressPercent.textContent = Math.round(progressPercentage) + '% Complete';
+        }
+
+        // Create tap animation
+        function createTapAnimation(earnings) {
+            const animation = document.createElement('div');
+            animation.className = 'tap-animation';
+            animation.textContent = `+${earnings.toFixed(1)} TON`;
+            animation.style.left = (tapButton.offsetLeft + tapButton.offsetWidth / 2) + 'px';
+            animation.style.top = (tapButton.offsetTop + tapButton.offsetHeight / 2) + 'px';
+            document.body.appendChild(animation);
+            
             setTimeout(() => {
-                document.querySelector('.progress-fill').style.width = '0%';
-            }, 500);
-        });
+                document.body.removeChild(animation);
+            }, 1000);
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Energy regeneration simulation
+        setInterval(() => {
+            if (gameState.energy < gameState.maxEnergy) {
+                gameState.energy += 1;
+                updateUI();
+            }
+        }, 5000); // Regenerate 1 energy every 5 seconds
+
+        // Initialize the game
+        initGame();
     </script>
 </body>
 </html>
